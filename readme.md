@@ -194,8 +194,9 @@ ggplot(dataset, aes(x = status, y = anomaly_score, fill = status)) +
 ```
 
 ## Dashboard Final
-![Dashboard Power BI](imagens/dashboard.png)
+![Dashboard Power BI](dashboard.png)
 
 ## Conclusão
 Este projeto demonstra como R e Power BI podem ser integrados para resolver problemas de detecção de anomalias em dados financeiros, oferecendo insights visuais e práticos para apoiar a tomada de decisão.
+
 
