@@ -92,7 +92,7 @@ plot(density(previsoes_historico$anomaly_score))
 
 # Quanto maior o anomaly score maior a chance do registro ser uma anomalia
 ```
-5. Definindo o Score de Anomalia
+5. **Definindo o Score de Anomalia**
 ```r
 # Define como regra que anomaly score acima de 0.62 é uma anomalia
 indices_historico = previsoes_historico[which(previsoes_historico$anomaly_score > 0.62)]
@@ -113,7 +113,7 @@ ggplot() +
              col = "red2", 
              alpha = 0.8)
 ```
-6. Aplicando o Modelo de Detecção de Anomalias a Novos Dados
+6. **Aplicando o Modelo de Detecção de Anomalias a Novos Dados**
 ```r
 # Carregando e visualizando novos dados
 novos_dados_dsa <- read.csv("novos_dados.csv")
@@ -143,7 +143,7 @@ ggplot() +
 # Visualizando previsões
 View(previsoes_novos_dados)
 ```
-7. Analisando as Anomalias com Box Plot em Linguagem R
+7. **Analisando as Anomalias com Box Plot em Linguagem R**
 ```r
 # Arredondando a coluna 'anomaly_score' para 2 casas decimais
 previsoes_novos_dados <- previsoes_novos_dados %>%
@@ -166,11 +166,11 @@ ggplot(previsoes_novos_dados, aes(x = status, y = anomaly_score, fill = status))
 # Salvando em disco
 write.csv(previsoes_novos_dados, "previsoes_novos_dados.csv")
 ```
-8. Analisando as Anomalias com Box Plot no Power BI
+8. **Analisando as Anomalias com Box Plot no Power BI**
 
-- Carregar o arquivo previsoes_novos_dados.csv
-- Transformar dados da coluna “anomaly_score” para números decimais.
-- Criar script R
+- Passo 1: Carregar o arquivo previsoes_novos_dados.csv
+- Passo 2: Transformar dados da coluna “anomaly_score” para números decimais.
+- Passo 3: Criar script R para gerar o gráfico Box Plot
 
 ```r
 # O código a seguir para criar um dataframe e remover as linhas duplicadas sempre é executado e age como um preâmbulo para o script: 
@@ -193,10 +193,9 @@ ggplot(dataset, aes(x = status, y = anomaly_score, fill = status)) +
   theme(legend.position = "none")
 ```
 
-## Dashboard Final
+## **Dashboard Final**
 ![Dashboard Power BI](dashboard.png)
 
-## Conclusão
+## **Conclusão**
 Este projeto demonstra como R e Power BI podem ser integrados para resolver problemas de detecção de anomalias em dados financeiros, oferecendo insights visuais e práticos para apoiar a tomada de decisão.
-
 
