@@ -1,41 +1,33 @@
-# Detecção de Anomalias em Transações Financeiras (R + Power BI)
-
-Projeto desenvolvido durante o capítulo 18 do curso **"Microsoft Power BI para Business Intelligence e Data Science"** da Data Science Academy.  
-Os dados utilizados são **fictícios**.
+# Detecção de Anomalias em Transações Financeiras
 
 ## Descrição
+Este projeto aborda a identificação de comportamentos atípicos em transações financeiras, simulando um cenário de prevenção a fraudes. A solução utiliza o algoritmo de Machine Learning não supervisionado Isolation Forest, implementado em linguagem R, para isolar registros que divergem do padrão histórico de movimentações.
 
-Este projeto simula um cenário em que uma empresa financeira possui dados históricos de clientes com duas transações (chamadas de `transacao1` e `transacao2`).  
-Os gestores suspeitam que algumas dessas transações possam ser fraudulentas e desejam identificar **anomalias**.  
+A integração entre a modelagem estatística em R e a visualização no Power BI permite que analistas financeiros monitorem o anomaly score de cada transação, facilitando a identificação rápida de atividades suspeitas e a mitigação de riscos operacionais.
 
-Utilizando **Machine Learning com o algoritmo Isolation Forest**, os dados foram agrupados e analisados para detectar possíveis anomalias.  
-O resultado foi disponibilizado em **gráficos no Power BI**, permitindo uma visualização clara e interativa.
+## Pipeline
+1. Extração e Configuração de Ambiente
+2. Implementação e Treinamento do Modelos 
+3. Escalonamento e Definição de Threshold 
+4. Validação com Novos Dados 
+5. Exportação e Integração
+6. Visualização Analítica e Dashboards
 
+## Objetivos Técnicos
+* **Detecção Não Supervisionada:** Aplicação do algoritmo Isolation Forest para identificar anomalias sem a necessidade de dados previamente rotulados como fraude.
+* **Análise de Densidade:** Avaliação da distribuição dos scores para definição estatística do limiar (threshold) de anomalia.
+* **Engenharia de Features:** Criação de colunas de status e arredondamento de métricas para consumo em dashboards.
+* **Integração R-BI:** Execução de scripts R diretamente no Power BI para geração de visualizações estatísticas avançadas, como o Box Plot.
 
-## Definição do Problema
+## Tecnologias e Ferramentas
+* **Linguagem R:** Motor principal para processamento e modelagem estatística.
+* **Solitude:** Biblioteca específica para implementação do algoritmo Isolation Forest.
+* **Tidyverse & Ggplot2:** Manipulação de dados e visualização científica.
+* **Power BI Desktop:** Camada de apresentação e interface interativa.
 
-- Detectar transações financeiras que possam ser consideradas **anomalias**.  
-- Criar um modelo de Machine Learning em R para identificar padrões e destacar registros suspeitos.  
-- Disponibilizar os resultados em **dashboards no Power BI** para análise visual.  
+## Desenvolvimento da Solução
 
-
-## Dados
-
-- `dados_historicos.csv`: dataset fictício com transações financeiras históricas.  
-- `novos_dados.csv`: dataset fictício com novas transações para validação do modelo.  
-- `previsoes_novos_dados.csv`: resultado das previsões, incluindo o **anomaly score** e o status (`anomalia` ou `normal`).  
-
-
-## Ferramentas Utilizadas
-
-- **R** (tidyverse, dplyr, solitude, ggplot2, readr)  
-- **Rtools**  
-- **RStudio**  
-- **Power BI Desktop**  
-
-## Passo a Passo
-
-1. **Instalação e carregamento de pacotes R**  
+### 1. Extração e Configuração de Ambiente 
 ```r
 # Instala os pacotes
 install.packages("tidyverse")
@@ -50,18 +42,14 @@ library(dplyr)
 library(solitude)
 library(ggplot2)
 library(readr)
-```
 
-2. **Carregamento e visualização dos dados históricos**
-```r
 # Carrega os dados históricos
 dados_historicos_dsa <- read_csv("dados_historicos.csv")
 
 # Visualiza os dados históricos
 View(dados_historicos_dsa)
 ```
-
-3. **Construção Modelo de Machine Learning**
+### 2. Implementação e Treinamento do Modelo
 ```r
 # Consulta Documentação do Algoritmo
 ?isolationForest 
@@ -76,9 +64,7 @@ modelo_ml_dsa$fit(dados_historicos_dsa)
 previsoes_historico = dados_historicos_dsa %>%
   modelo_ml_dsa$predict() %>%
   arrange(desc(anomaly_score))
-```
-4. **Fazendo Previsões com o Modelo de Detecção de Anomalias**
-```r
+
 # Faz as previsões com o modelo usando os dados históricos
 previsoes_historico = dados_historicos_dsa %>%
   modelo_ml_dsa$predict() %>%
@@ -86,14 +72,14 @@ previsoes_historico = dados_historicos_dsa %>%
 
 # Visualiza as previsões
 View(previsoes_historico)
-
+```
+### 3. Escalonamento e Definição de Threshold
+```r
 # Density Plot 
 plot(density(previsoes_historico$anomaly_score))
 
 # Quanto maior o anomaly score maior a chance do registro ser uma anomalia
-```
-5. **Definindo o Score de Anomalia**
-```r
+
 # Define como regra que anomaly score acima de 0.62 é uma anomalia
 indices_historico = previsoes_historico[which(previsoes_historico$anomaly_score > 0.62)]
 
@@ -113,7 +99,7 @@ ggplot() +
              col = "red2", 
              alpha = 0.8)
 ```
-6. **Aplicando o Modelo de Detecção de Anomalias a Novos Dados**
+### 4. Validação com Novos Dados
 ```r
 # Carregando e visualizando novos dados
 novos_dados_dsa <- read.csv("novos_dados.csv")
@@ -142,13 +128,13 @@ ggplot() +
 
 # Visualizando previsões
 View(previsoes_novos_dados)
-```
-7. **Analisando as Anomalias com Box Plot em Linguagem R**
-```r
+
 # Arredondando a coluna 'anomaly_score' para 2 casas decimais
 previsoes_novos_dados <- previsoes_novos_dados %>%
   mutate(anomaly_score = round(anomaly_score, 2))
- 
+```
+### 5. Exportação e Integração
+```r
 # Criando uma nova coluna (status) com base na condição score de anomalias
 previsoes_novos_dados <- previsoes_novos_dados %>%
   mutate(status = ifelse(anomaly_score > 0.62, "anomalia", "normal"))
@@ -162,24 +148,14 @@ ggplot(previsoes_novos_dados, aes(x = status, y = anomaly_score, fill = status))
   theme_minimal() +
   scale_fill_manual(values = c("anomalia" = "red", "normal" = "blue")) +
   theme(legend.position = "none")
-
+```
+### 5. Exportação e Integração
+```r
 # Salvando em disco
 write.csv(previsoes_novos_dados, "previsoes_novos_dados.csv")
 ```
-8. **Analisando as Anomalias com Box Plot no Power BI**
-
-- Passo 1: Carregar o arquivo previsoes_novos_dados.csv
-- Passo 2: Transformar dados da coluna “anomaly_score” para números decimais.
-- Passo 3: Criar script R para gerar o gráfico Box Plot
-
+### 6. Visualização Analítica e Dashboards
 ```r
-# O código a seguir para criar um dataframe e remover as linhas duplicadas sempre é executado e age como um preâmbulo para o script: 
-
-# dataset <- data.frame(status, anomaly_score)
-# dataset <- unique(dataset)
-
-# Cole ou digite aqui seu código de script:
-
 library(ggplot2)
 
 # Criando o box plot
@@ -196,6 +172,6 @@ ggplot(dataset, aes(x = status, y = anomaly_score, fill = status)) +
 ## **Dashboard Final**
 ![Dashboard Power BI](dashboard.png)
 
-## **Conclusão**
-Este projeto demonstra como R e Power BI podem ser integrados para resolver problemas de detecção de anomalias em dados financeiros, oferecendo insights visuais e práticos para apoiar a tomada de decisão.
+Projeto desenvolvido como parte do programa de formação em Business Intelligence e Data Science da Data Science Academy.
+
 
